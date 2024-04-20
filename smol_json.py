@@ -1,14 +1,28 @@
 from tokenizer import Tokenizer
 from parser import Parser
+from typing import Union
 
 
 def loads(json_string: str):
     lexer = Tokenizer(json_string)
-    parser = Parser(lexer.lex())
+    tokens = lexer.lex()
+    lexer.print()
+    parser = Parser(tokens)
     return parser.parse()
 
 
-def dumps(obj: dict, level=0, indent=4) -> str:
+def dumps(obj: Union[None, bool, float, int, str, dict], level=0, indent=4) -> str:
+    if obj is None:
+        return "null"
+    if isinstance(obj, str):
+        return f'\"{obj}\"'
+    if isinstance(obj, (bool, int, float)):
+        return str(obj)
+    if isinstance(obj, list):
+        return '[\n' + ','.join([dumps(item, level, indent) for item in obj]) + ']'
+
+    print(obj)
+
     json_str = ["{\n"]
     keys = 0
 
@@ -16,12 +30,10 @@ def dumps(obj: dict, level=0, indent=4) -> str:
         kv_str = [' '*(level + 1)*indent, f'\"{key}\": ']
         val = obj[key]
 
-        if isinstance(val, str):
-            kv_str.append(f'\"{val}\"')
-        if isinstance(val, (bool, int, float)):
-            kv_str.append(str(val))
         if isinstance(val, dict):
             kv_str.append(dumps(val, level + 1, indent))
+        else:
+            kv_str.append(dumps(val))
 
         keys += 1
         kv_str.append('\n' if keys == len(obj) else ',\n')

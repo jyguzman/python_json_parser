@@ -35,7 +35,13 @@ if __name__ == '__main__':
         "randomFloat": 897.90,
         "randomList": [1, "thing", False, None, True, 1.5]
     }
-    res_dict = smol_json.loads('{"hello": "world", "inner": {"age": 25, "innerInner": {"bye": "mars", "boolean": false}}, "float": 5.67}')#, "hobbies": ["games", "drawing", "working out"]}')
+    strings = [
+        """{"body": [{"item": "apple", "quantity": 10},
+  {"item": "banana", "quantity": 5, "extra": null},
+  {"item": "pear", "quantity": 3}]}"""
+    ]
+    res_dict = smol_json.loads(strings[0])#, "hobbies": ["games", "drawing", "working out"]}')
+    print(res_dict)
     json_str = smol_json.dumps(res_dict)
     print(json_str)
 

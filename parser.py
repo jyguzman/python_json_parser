@@ -26,7 +26,7 @@ class Parser:
         while self.peek().type != TokenType.RBRACKET:
             t = self.advance()
             self.expect_value()
-            array.append(self.parse_value(t))
+            array.append(self.parse_value())
             self.advance()
             if self.peek().type != TokenType.RBRACKET:
                 self.expect(TokenType.COMMA)
@@ -43,10 +43,10 @@ class Parser:
             self.advance()
             self.expect(TokenType.COLON)
 
-            value_token = self.advance()
+            self.advance()
             self.expect_value()
 
-            value = self.parse_value(value_token)
+            value = self.parse_value()
             obj[key_token.literal.strip('\"')] = value
 
             self.advance()
@@ -56,7 +56,8 @@ class Parser:
 
         return obj
 
-    def parse_value(self, token: Token):
+    def parse_value(self):
+        token = self.tokens[self.pos]
         if token.type == TokenType.LBRACE:
             return self.parse_object()
         if token.type == TokenType.LBRACKET:
@@ -91,7 +92,7 @@ class Parser:
         return self.tokens[self.pos].type == TokenType.EOF
 
     def parse(self) -> Dict:
-        self.result = self.parse_object()
-        self.expect(TokenType.EOF)
+        self.result = self.parse_value()
         self.advance()
+        self.expect(TokenType.EOF)
         return self.result
