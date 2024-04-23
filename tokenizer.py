@@ -40,7 +40,7 @@ class Tokenizer:
 
     def lex_string(self) -> Token:
         start_pos = self.pos - 1
-        string = [self.previous(1)]
+        string = [self.previous()]
         while self.peek(0) not in ('\"', '\0'):
             string.append(self.advance())
 
@@ -68,7 +68,7 @@ class Tokenizer:
 
     def lex_keyword(self):
         start_pos = self.pos - 1
-        keyword = [self.previous(1)]
+        keyword = [self.previous()]
 
         while self.peek().isalpha():
             keyword.append(self.advance())

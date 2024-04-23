@@ -1,5 +1,5 @@
 from Token import Token, TokenType
-from typing import List, Dict, Optional, Union
+from typing import List, Union
 from JSONObject import JSONObject, JSONArray
 
 
@@ -16,8 +16,8 @@ class Parser:
         return Token(TokenType.EOF, self.pos + n, '')
 
     def advance(self) -> Token:
+        self.pos += 1
         if self.pos + 1 < len(self.tokens):
-            self.pos += 1
             return self.tokens[self.pos]
         return Token(TokenType.EOF, self.pos, '')
 
@@ -63,7 +63,7 @@ class Parser:
         return obj
 
     def parse_value(self):
-        token = self.tokens[self.pos]
+        token = self.peek()
         if token.type == TokenType.LBRACE:
             return self.parse_object()
         if token.type == TokenType.LBRACKET:
@@ -95,9 +95,9 @@ class Parser:
                     TokenType.NULL)
 
     def is_eof(self):
-        return self.tokens[self.pos].type == TokenType.EOF
+        return self.peek().type == TokenType.EOF
 
-    def parse(self) -> JSONObject | JSONArray | str | float | int | bool | None:
+    def parse(self) -> Union[JSONObject, JSONArray, str, float, int, bool, None]:
         result = self.parse_value()
         self.advance()
         self.expect(TokenType.EOF)
